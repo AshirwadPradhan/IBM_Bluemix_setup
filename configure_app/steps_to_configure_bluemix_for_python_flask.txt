@@ -1,0 +1,77 @@
+1. Navigate to the directory which contains the project files
+
+2. List of files required
+    i. hello.py -- main file which will serve the app
+                    
+                    Port parameters for IBM bluemix
+                    We need to use the port which is defined in the VCAP_APP_PORT env variable
+                    already in the system
+                    """""""""""""""""""""""""""""""""""""""""""
+                    port = os.getenv('VCAP_APP_PORT', '5000')
+                    if __name__ == "__main__":
+                        app.run(host='0.0.0.0', port=int(port))
+                    """""""""""""""""""""""""""""""""""""""""""
+
+    ii. Procfile -- command to run the main file(hello.py)
+                        ---------------------------------------------
+                        | web: python hello.py                      |
+                        |                                           |
+                        |                                           |
+                        |                                           |
+                        ---------------------------------------------
+    
+    iii. manifest.yml -- configuration for the bluemix cloud
+                        ---------------------------------------------
+                        |  ---                                      |
+                        |  applications:                            |
+                        |  - name: helloflask001                    |
+                        |    random-route: true                     |
+                        |  memory: 128M                             |
+                        |                                           |
+                        |                                           |
+                        |                                           |
+                        ---------------------------------------------
+                        Here name: put the actual name of the instance that you have used
+                                   in the bluemix instance name
+                             random-route is true to avoid conflicting domain names
+                             memory reprents how much memory is to reserved for this app instance
+
+    iv. runtime.txt -- tells the cloud foundry cli which python buildpack version to install
+                        ---------------------------------------------
+                        | python-3.5.4                              |
+                        |                                           |
+                        |                                           |
+                        |                                           |
+                        ---------------------------------------------
+    
+    v. requirements.txt -- python requirements file
+
+3. Install cloud foundry cli now
+
+4. Open command prompt and follow these list of commands.
+    i. To set API endpoint 
+            > cf api <API-endpoint>
+        Replace API-endpoint to the region where you have created your app instance 
+         for example: (https://api.ng.bluemix.net) for US-South
+    
+    ii. Now to login
+            --For non-federated users:
+                > cf login
+            Enter your required credentials
+
+            --For federated users:
+                > cf login -sso
+            Enter your onetime password from the given link
+
+            Now you will be asked about the "Organization" and "Space". Set it
+            according to the instance you have created.
+    
+    iii. Now to deploy your app
+            > cf push -b https://github.com/cloudfoundry/python-buildpack
+        -b argument specifies the buildpack to use( in this case we used python)
+    
+    iv. Your app should be succssfully deployed by now.
+        If not then check the errors using 
+            > cf logs <Your-App-Name> --recent
+
+                        
